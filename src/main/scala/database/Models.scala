@@ -11,6 +11,10 @@ case class Post(override val id: Int, url: String, title: String, tags: List[Str
 }
 
 object Post {
+    def apply(id: Int, url: String, title: String) = {
+        new Post(id, url, title, List())
+    }
+
     def apply(url: String, title: String) = {
         new Post(0, url, title, List())
     }

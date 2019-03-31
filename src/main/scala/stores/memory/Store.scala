@@ -12,8 +12,9 @@ class Store[E <: Entity[E]](entries: IntMap[E]) {
     }
 
     def update(entry: E) : Option[Store[E]] = {
-        val newEntries = entries.updated(entry.id, entry)
+        if(!entries.contains(entry.id)) return None
 
+        val newEntries = entries.updated(entry.id, entry)
         Some(Store(newEntries))
     }
 
