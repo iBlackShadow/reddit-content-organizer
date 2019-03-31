@@ -1,16 +1,19 @@
 package test.unit.stores
 
 import test.unit.UnitSpec
-import stores.memory.PostStore
-import reddit.Post
+import stores.memory.Store
+import database.Post
 
 class PostStoreSuite extends UnitSpec {
-    test("save post assigns an id") {
-        val store = PostStore()
+    test("create post assigns an id") {
+        val store = Store[Post]()
         val post = Post("url", "title")
 
-        store.create(post)
-
-        assert(store.getPosts().get(0).id == 1)
+        assertResult(Some(1)){ 
+            for {
+                (id, store1) <- store.create(post)
+                posts <- store1.getEntries
+            } yield posts(0).id
+        }
     }
 }
