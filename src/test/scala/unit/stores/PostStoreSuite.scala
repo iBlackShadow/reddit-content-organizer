@@ -7,7 +7,7 @@ import database.Post
 class PostStoreSuite extends UnitSpec {
     test("create adds an entry") {
         val store1 = Store[Post]()
-        val post = Post("url", "title")
+        val post = Post("url", "title", "subreddit")
 
         assertResult(Some(1)){ 
             for {
@@ -20,7 +20,7 @@ class PostStoreSuite extends UnitSpec {
 
     test("create assigns a sequential id") {
         val store1 = Store[Post]()
-        val post = Post("url", "title")
+        val post = Post("url", "title", "subreddit")
 
         assertResult(Some(1, 2, 3)){ 
             for {
@@ -33,8 +33,8 @@ class PostStoreSuite extends UnitSpec {
 
     test("get entries return list of entries") {
         val store1 = Store[Post]()
-        val post1 = Post("url 1", "title 1")
-        val post2 = Post("url 2", "title 2")
+        val post1 = Post("url 1", "title 1", "subreddit 1")
+        val post2 = Post("url 2", "title 2", "subreddit 2")
 
         assertResult(Some(List(post1.copy(id = 1), post2.copy(id = 2)))){
             for {
@@ -47,8 +47,8 @@ class PostStoreSuite extends UnitSpec {
 
     test("update changes existing entry values") {
         val store1 = Store[Post]()
-        val post = Post("url", "title")
-        val updatedPost = Post(1, "updated url", "updated title")
+        val post = Post("url", "title", "subreddit")
+        val updatedPost = Post(1, "updated url", "updated title", "updated subreddit")
 
         assertResult(Some(updatedPost)){
             for {
@@ -60,8 +60,8 @@ class PostStoreSuite extends UnitSpec {
 
     test("update fails when post has no id") {
         val store1 = Store[Post]()
-        val post = Post("url", "title")
-        val updatedPost = Post("updated url", "updated title")
+        val post = Post("url", "title", "subreddit")
+        val updatedPost = Post("updated url", "updated title", "updated subreddit")
 
         assertResult(None){
             for {
@@ -73,7 +73,7 @@ class PostStoreSuite extends UnitSpec {
 
     test("update fails when id does not exist in the store") {
         val store1 = Store[Post]()
-        val updatedPost = Post(1, "updated url", "updated title")
+        val updatedPost = Post(1, "updated url", "updated title", "updated subreddit")
 
         assertResult(None){
             for {
