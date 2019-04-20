@@ -1,6 +1,5 @@
-package test.unit.stores
+package test.unit
 
-import test.unit.UnitSpec
 import database.Post
 import reddit.Reddit
 

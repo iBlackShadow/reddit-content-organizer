@@ -20,6 +20,9 @@ version := "0.1"
 // mostly only necessary if you intend to publish your library's binaries on a
 // place like Sonatype or Bintray.
 
+// for more info abpunt scala test format options
+// http://www.scalatest.org/user_guide/using_the_runner
+testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oCH")
 
 // Want to use a published library in your project?
 // You can define other libraries as dependencies in your build like this:
