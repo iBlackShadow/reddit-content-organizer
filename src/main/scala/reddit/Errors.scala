@@ -1,0 +1,3 @@
+package reddit
+
+class SubredditNotFoundException extends Exception

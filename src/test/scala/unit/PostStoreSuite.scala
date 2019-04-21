@@ -1,7 +1,10 @@
 package test.unit
 
+import org.scalatest.TryValues._
+import stores.EntryNotFoundException
 import stores.memory.Store
 import database.Post
+import scala.util.{ Success, Failure }
 
 class PostStoreSuite extends UnitSpec {
   val store = Store[Post]()
@@ -9,7 +12,7 @@ class PostStoreSuite extends UnitSpec {
   test("create adds an entry") {
     val post = Post("url", "title", "subreddit")
 
-    assertResult(Some(1)){ 
+    assertResult(Success(1)){ 
       for {
         (_, store2) <- store.create(post)
         posts1 <- store.getEntries
@@ -21,7 +24,7 @@ class PostStoreSuite extends UnitSpec {
   test("create assigns a sequential id") {
     val post = Post("url", "title", "subreddit")
 
-    assertResult(Some(1, 2, 3)){ 
+    assertResult(Success(1, 2, 3)){ 
       for {
         (id1, store2) <- store.create(post)
         (id2, store3) <- store2.create(post)
@@ -34,7 +37,7 @@ class PostStoreSuite extends UnitSpec {
     val post1 = Post("url 1", "title 1", "subreddit 1")
     val post2 = Post("url 2", "title 2", "subreddit 2")
 
-    assertResult(Some(List(post1.copy(id = 1), post2.copy(id = 2)))){
+    assertResult(Success(List(post1.copy(id = 1), post2.copy(id = 2)))){
       for {
         (_, store2) <- store.create(post1)
         (_, store3) <- store2.create(post2)
@@ -47,7 +50,7 @@ class PostStoreSuite extends UnitSpec {
     val post = Post("url", "title", "subreddit")
     val updatedPost = Post(1, "updated url", "updated title", "updated subreddit")
 
-    assertResult(Some(updatedPost)){
+    assertResult(Success(updatedPost)){
       for {
         (_, store2) <- store.create(post)
         (store3) <- store2.update(updatedPost)
@@ -57,23 +60,13 @@ class PostStoreSuite extends UnitSpec {
 
   test("update fails when post has no id") {
     val post = Post("url", "title", "subreddit")
-    val updatedPost = Post("updated url", "updated title", "updated subreddit")
 
-    assertResult(None){
-      for {
-        (_, store2) <- store.create(post)
-        (store3) <- store2.update(updatedPost)
-      } yield store3.getEntries.get(0)
-    }
+    assert(store.update(post).failure.exception.isInstanceOf[EntryNotFoundException])
   }
 
   test("update fails when id does not exist in the store") {
-    val updatedPost = Post(1, "updated url", "updated title", "updated subreddit")
+    val post = Post(1, "url", "title", "subreddit")
 
-    assertResult(None){
-      for {
-        (store2) <- store.update(updatedPost)
-      } yield store2.getEntries.get(0)
-    }
+    assert(store.update(post).failure.exception.isInstanceOf[EntryNotFoundException])
   }
 }

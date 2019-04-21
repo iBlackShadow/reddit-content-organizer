@@ -2,6 +2,7 @@ package test.unit
 
 import database.Post
 import reddit.Reddit
+import scala.util.Success
 
 class RedditSuite extends UnitSpec {
   test("get post information") {
@@ -9,7 +10,7 @@ class RedditSuite extends UnitSpec {
     val title = "[DISC] Kingdom Chapter 595"
     val subreddit = "manga"
 
-    assertResult(Some(Post(url, title, subreddit))){   
+    assertResult(Success(Post(url, title, subreddit))){   
       Reddit.getPost(url)
     }
   }

@@ -1,0 +1,4 @@
+package database
+
+class DuplicatedTagException extends Exception
+class NonExistentTagException extends Exception

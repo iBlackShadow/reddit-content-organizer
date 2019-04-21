@@ -1,5 +1,5 @@
 package test.unit
 
-import org.scalatest.{ FunSuite, BeforeAndAfter }
+import org.scalatest.{ FunSuite }
 
-abstract class UnitSpec extends FunSuite with BeforeAndAfter
+abstract class UnitSpec extends FunSuite

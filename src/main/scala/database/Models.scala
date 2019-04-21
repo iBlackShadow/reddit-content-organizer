@@ -1,5 +1,7 @@
 package database
 
+import scala.util.{ Try, Success, Failure }
+
 sealed abstract class Entity[E](val id: Int) {
   def withId(id: Int): E
 }
@@ -9,19 +11,19 @@ case class Post(override val id: Int, url: String, title: String, subreddit: Str
     this.copy(id = id)
   }
 
-  def tag(tag: String): Option[Post] = {
+  def tag(tag: String): Try[Post] = {
     if (tags(tag)) {
-      None
+      Failure(new DuplicatedTagException)
     } else {
-      Some(this.copy(tags = tags + tag))
+      Success(this.copy(tags = tags + tag))
     }
   }
 
-  def untag(tag: String): Option[Post] = {
+  def untag(tag: String): Try[Post] = {
     if (tags(tag)) {
-      Some(this.copy(tags = tags - tag))
+      Success(this.copy(tags = tags - tag))
     } else {
-      None
+      Failure(new NonExistentTagException)
     }
   }
 }

@@ -1,6 +1,8 @@
 package test.unit
 
-import database.Post
+import org.scalatest.TryValues._
+import scala.util.{ Success, Failure }
+import database.{ Post, DuplicatedTagException, NonExistentTagException }
 
 class PostSuite extends UnitSpec {
   val post = Post("url", "title", "subreddit")
@@ -14,22 +16,24 @@ class PostSuite extends UnitSpec {
   test("tag adds a tag") {
     val expectedPost = post.copy(tags = Set("cats"))
 
-    assertResult(Some(expectedPost)) {
+    assertResult(Success(expectedPost)) {
       post.tag("cats")
     }
   }
 
   test("tag returns an error when the tag already exists") {
-    assertResult(None) {
-      for {
+    assert {
+      val result = for {
         taggedPost <- post.tag("cats")
         result <- taggedPost.tag("cats")
       } yield result
+
+      result.failure.exception.isInstanceOf[DuplicatedTagException]
     }
   }
 
   test("untag removes a tag") {
-    assertResult(Some(post)) {
+    assertResult(Success(post)) {
       for {
         taggedPost <- post.tag("cats")
         result <- taggedPost.untag("cats")
@@ -38,8 +42,6 @@ class PostSuite extends UnitSpec {
   }
 
   test("untag returns an error when the tag does no exists") {
-    assertResult(None) {
-      post.untag("cats")
-    }
+    assert(post.untag("cats").failure.exception.isInstanceOf[NonExistentTagException])
   }
 }
