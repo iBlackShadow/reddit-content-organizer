@@ -8,15 +8,24 @@ import database.Post
 import scala.util.{ Try, Success, Failure }
 
 object Reddit {
-  // TODO: handle invalid url
   def getPost(url: String): Try[Post] = {
-    val document = new JsoupBrowser().get(url)
-    val title = document >> text(".Post h2")
-    val pattern = ".*/r/(.+?)/.*".r
+    val result = for {
+      document <- Try(new JsoupBrowser().get(url))
+      title <- Try(document >> text(".Post h2"))
+      post <- {
+        val pattern = ".*/r/(.+?)/.*".r
+        url match {
+          case pattern(subreddit) => Success(Post(url, title, subreddit))
+          case _ => Failure(new SubredditNotFoundException)
+        }
+      }
+    } yield post
 
-    url match {
-      case pattern(subreddit) => Success(Post(url, title, subreddit))
-      case _ => Failure(new SubredditNotFoundException)
+    result match {
+      case Success(_) => result
+      case Failure(exception: java.util.NoSuchElementException) => Failure(new InvalidPostUrlException(s"Title no found: ${url}"))
+      case Failure(exception: java.lang.IllegalArgumentException) => Failure(new InvalidPostUrlException(s"Invalid url: ${url}"))
+      case _ => result
     }
   }
 }

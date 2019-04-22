@@ -1,8 +1,9 @@
 package test.unit
 
 import database.Post
-import reddit.Reddit
+import reddit.{ Reddit, InvalidPostUrlException }
 import scala.util.Success
+import org.scalatest.TryValues._
 
 class RedditSuite extends UnitSpec {
   test("get post information") {
@@ -13,5 +14,17 @@ class RedditSuite extends UnitSpec {
     assertResult(Success(Post(url, title, subreddit))){   
       Reddit.getPost(url)
     }
+  }
+
+  test("get post information - invalid url") {
+    val url = "asd"
+
+    assert(Reddit.getPost(url).failure.exception.isInstanceOf[InvalidPostUrlException])
+  }
+
+  test("get post non reddit url") {
+    val url = "https://www.google.com"
+
+    assert(Reddit.getPost(url).failure.exception.isInstanceOf[InvalidPostUrlException])
   }
 }
