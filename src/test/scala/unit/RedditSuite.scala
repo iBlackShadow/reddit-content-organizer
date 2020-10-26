@@ -1,9 +1,10 @@
 package test.unit
 
 import database.Post
-import reddit.{ Reddit, InvalidPostUrlException }
-import scala.util.Success
 import org.scalatest.TryValues._
+import reddit.{InvalidPostUrlException, Reddit}
+
+import scala.util.Success
 
 class RedditSuite extends UnitSpec {
   test("get post information") {
