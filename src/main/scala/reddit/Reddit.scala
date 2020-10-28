@@ -11,7 +11,7 @@ object Reddit {
   def getPost(url: String): Try[Post] = {
     val result = for {
       document <- Try(new JsoupBrowser().get(url))
-      title <- Try(document >> text(".Post h2"))
+      title <- Try(document >> text(".Post h1"))
       post <- {
         val pattern = ".*/r/(.+?)/.*".r
         url match {
