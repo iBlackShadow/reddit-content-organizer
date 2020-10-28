@@ -1,12 +1,13 @@
 package database
 
-import scala.util.{ Try, Success, Failure }
+import scala.util.{Try, Success, Failure}
 
 sealed abstract class Entity[E](val id: Int) {
   def withId(id: Int): E
 }
 
-case class Post(override val id: Int, url: String, title: String, subreddit: String, tags: Set[String]) extends Entity[Post](id) {
+case class Post(override val id: Int, url: String, title: String, subreddit: String, tags: Set[String])
+  extends Entity[Post](id) {
   def withId(id: Int): Post = {
     this.copy(id = id)
   }
