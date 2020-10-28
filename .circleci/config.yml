@@ -29,6 +29,10 @@ jobs:
             - v1-dependencies-
 
       - run:
+          name: lint
+          command: cat /dev/null | sbt scalafmtCheck
+
+      - run:
           name: compile
           command: cat /dev/null | sbt test:compile
 
